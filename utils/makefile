@@ -3,7 +3,11 @@
 BASEIMAGE := xycarto/proj-grids
 IMAGE := $(BASEIMAGE):2023-04-22
 
-RUN ?= docker run --rm --net=host --user=$$(id -u):$$(id -g) -e DISPLAY=$$DISPLAY --env-file .creds -e RUN= -v$$(pwd):/work -w /work $(IMAGE)
+RUN ?= docker run -it --rm --net=host --user=$$(id -u):$$(id -g) -e DISPLAY=$$DISPLAY --env-file .creds -e RUN= -v$$(pwd):/work -w /work $(IMAGE)
+
+# Run like: make build-grid epsg="EPSG:3310"
+build-grid:
+	$(RUN) python3 gridding/create-grid.py $(epsg)
 
 local-test: Dockerfile
 	docker run -it --rm --net=host --user=$$(id -u):$$(id -g) \
