@@ -1,0 +1,26 @@
+# testing data
+data
+**/data
+**/proj-grids
+qgis/*
+*.lock
+*.h5
+
+# VSCode
+.vscode/*
+
+# Mac
+**/.DS_Store
+.dbus*
+
+# History and AWS
+.aws
+.bash_history
+.cache
+.local
+.python_history
+
+# hide secrets
+.creds
+.config
+.ssh
