@@ -1,4 +1,3 @@
-import boto3
 import sys
 import pyproj
 import os
@@ -9,16 +8,14 @@ import numpy as np
 # python3 utils/gridding/create-grid.py "EPSG:3310"
 
 def main():
-    s3 = get_creds()
-
     runBbox = get_proj_bbox(EPSG)
     
-    df = gp.GeoDataFrame(index=[0], crs="epsg:4326", geometry=[runBbox]) 
-    
+    # Make BBox from WGS84 extents
+    df = gp.GeoDataFrame(index=[0], crs="epsg:4326", geometry=[runBbox])    
     gp_reproj = gp.GeoDataFrame(df, crs = "epsg:4326").to_crs(EPSG)
 
     # Grid Bbox
-    print("Gridding Bbox")
+    ## Get extent values from whole projection
     proj_minx = gp_reproj.geometry.bounds['minx'].values[0]
     proj_maxx = gp_reproj.geometry.bounds['maxx'].values[0]
     proj_miny = gp_reproj.geometry.bounds['miny'].values[0]
@@ -37,7 +34,6 @@ def main():
         Ybottom = YbottomOrigin
         for j in range(rows):
             gridNum = str(i) + str(j)
-            prefixNum = os.path.join(GRID_PATH, gridNum)
             writeGeom = Polygon([(XleftOrigin, Ytop), (XrightOrigin, Ytop), (XrightOrigin, Ybottom), (XleftOrigin, Ybottom)])
             polygons.append(
                 {
@@ -48,7 +44,6 @@ def main():
                 'xmax': XrightOrigin,
                 'ymin': Ybottom,
                 'ymax': Ytop,
-                's3_prefix': prefixNum,
                 'geometry': writeGeom
                 }
             ) 
@@ -59,15 +54,6 @@ def main():
 
     print("Writing polygons")
     grid = gp.GeoDataFrame(polygons, crs=EPSG).to_file(f"{GRID_PATH}/{str(EPSG.split(':')[-1])}-grid-index.gpkg", driver="GPKG")
-
-def get_creds():    
-    s3 = boto3.client(
-        's3',
-        aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
-        aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
-    )
-    
-    return s3
 
 def get_proj_bbox(EPSG):
     
@@ -86,7 +72,6 @@ def get_proj_bbox(EPSG):
 if __name__ == "__main__":
     
     EPSG = sys.argv[1]
-    BUCKET = os.environ.get("AWS_BUCKET")
     GRID_PATH = "proj-grids"
     WIDTH = 1000
     HEIGHT = 1000
