@@ -10,9 +10,9 @@ RUN ?= docker run -it --rm --net=host \
 	-w /work \
 	$(IMAGE)
 
-# Run like: make build-grid epsg="EPSG:3310"
+# Run like: make build-grid epsg="EPSG:3310" width=100 height=100
 build-grid:
-	$(RUN) python3 create-grid.py $(epsg)
+	$(RUN) python3 create-grid.py $(epsg) $(width) $(height)
 
 local-test: Dockerfile
 	docker run -it --rm --net=host --user=$$(id -u):$$(id -g) \
