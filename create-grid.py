@@ -35,11 +35,7 @@ def main():
         y_top = y_top_origin
         y_bottom = y_bottom_origin
         for j in range(rows):
-            write_geom = Polygon(
-                [(x_left_origin, y_top), 
-                 (x_right_origin, y_top), 
-                 (x_right_origin, y_bottom), 
-                 (x_left_origin, y_bottom)])
+            write_geom = box(x_left_origin, y_bottom, x_right_origin, y_top)
             polygons.append(
                 {
                 'row': i,
