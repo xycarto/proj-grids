@@ -60,8 +60,8 @@ def main():
 
 if __name__ == "__main__":    
     EPSG = sys.argv[1]
-    WIDTH = int(sys.argv[2])
-    HEIGHT = int(sys.argv[3])
+    WIDTH = float(sys.argv[2])
+    HEIGHT = float(sys.argv[3])
     GRID_PATH = "proj-grids"    
     WGS = 4326
 
